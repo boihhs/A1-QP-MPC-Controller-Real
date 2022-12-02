@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.10.1)
 project(a1_cpp)
 set(CMAKE_BUILD_TYPE "Release")
 #set(CMAKE_BUILD_TYPE "Debug")
-set(CMAKE_CXX_FLAGS "-std=c++14")
 set(CMAKE_CXX_STANDARD 14)
 #-DEIGEN_USE_MKL_ALL")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
@@ -34,8 +33,6 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
 )
 
-# to find osqp.h
-include_directories(/usr/local/include/osqp)
 find_package(OsqpEigen REQUIRED)
 
 # add unitree hardware library, these flags must be correctly set
@@ -81,9 +78,9 @@ add_library(hardware_a1_lib
         )
 
 # all robots depends on the a1_lib
-target_link_libraries(gazebo_a1_lib a1_lib)
-target_link_libraries(isaac_a1_lib a1_lib)
-target_link_libraries(hardware_a1_lib a1_lib ${EXTRA_LIBS})
+target_link_libraries(gazebo_a1_lib PUBLIC a1_lib)
+target_link_libraries(isaac_a1_lib PUBLIC a1_lib)
+target_link_libraries(hardware_a1_lib PUBLIC a1_lib ${EXTRA_LIBS})
 
 # Declare a cpp executable for isaac robot
 add_executable(isaac_a1_ctrl src/MainIsaac.cpp)
