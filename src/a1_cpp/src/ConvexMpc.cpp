@@ -4,6 +4,8 @@
 
 #include "ConvexMpc.h"
 
+// #define CONVEX_MPC_USE_TIMING
+
 ConvexMpc::ConvexMpc(Eigen::VectorXd &q_weights_, Eigen::VectorXd &r_weights_) {
     mu = 0.3;
     fz_min = 0.0;
@@ -145,14 +147,18 @@ void ConvexMpc::calculate_B_mat_c(double robot_mass, const Eigen::Matrix3d &a1_t
 void ConvexMpc::state_space_discretization(double dt) {
     // simplified exp 
     // TODO: this function is not necessary because A is actually sparse
+#ifdef CONVEX_MPC_USE_TIMING
     auto t1 = std::chrono::high_resolution_clock::now();
+#endif
     // AB_mat_d = (dt * AB_mat_c).exp();
     A_mat_d = Eigen::Matrix<double, MPC_STATE_DIM, MPC_STATE_DIM>::Identity() + A_mat_c*dt;
     B_mat_d = B_mat_c*dt;
+#ifdef CONVEX_MPC_USE_TIMING
     auto t2 = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double, std::milli> ms_double_1 = t2 - t1;
 //    std::cout << "IN DISCRETIZATION: matrix exp: " << ms_double_1.count() << "ms" << std::endl;
+#endif
 }
 
 void ConvexMpc::calculate_qp_mats(A1CtrlStates &state) {

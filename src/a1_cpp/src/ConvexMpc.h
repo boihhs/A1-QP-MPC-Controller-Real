@@ -5,12 +5,13 @@
 #ifndef A1_CPP_CONVEXMPC_H
 #define A1_CPP_CONVEXMPC_H
 
+#undef EIGEN_STACK_ALLOCATION_LIMIT
 #define EIGEN_STACK_ALLOCATION_LIMIT 0
 
 #include <vector>
 #include <chrono>
 
-#include "OsqpEigen/OsqpEigen.h"
+#include <OsqpEigen/OsqpEigen.h>
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include <unsupported/Eigen/MatrixFunctions>

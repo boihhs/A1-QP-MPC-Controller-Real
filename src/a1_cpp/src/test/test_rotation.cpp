@@ -5,7 +5,6 @@
 #include <ctime>
 
 #include <Eigen/Dense>
-#include <OsqpEigen/OsqpEigen.h>
 
 #include "../A1CtrlStates.h"
 #include "../A1Params.h"

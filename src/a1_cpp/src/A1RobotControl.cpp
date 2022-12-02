@@ -428,7 +428,7 @@ Eigen::Matrix<double, 3, NUM_LEG> A1RobotControl::compute_grf(A1CtrlStates &stat
         auto t1 = std::chrono::high_resolution_clock::now();
         solver.initSolver();
         auto t2 = std::chrono::high_resolution_clock::now();
-        solver.solve();
+        solver.solveProblem();
         auto t3 = std::chrono::high_resolution_clock::now();
 
         std::chrono::duration<double, std::milli> ms_double_1 = t2 - t1;
@@ -488,13 +488,17 @@ Eigen::Matrix<double, 3, NUM_LEG> A1RobotControl::compute_grf(A1CtrlStates &stat
         }
 
         // a single A_c is computed for the entire reference trajectory
+#ifdef CONVEX_MPC_USE_TIMING
         auto t1 = std::chrono::high_resolution_clock::now();
+#endif
         mpc_solver.calculate_A_mat_c(state.root_euler);
 
         // for each point in the reference trajectory, an approximate B_c matrix is computed using desired values of euler angles and feet positions
         // from the reference trajectory and foot placement controller
         // state.foot_pos_abs_mpc = state.foot_pos_abs;
+#ifdef CONVEX_MPC_USE_TIMING
         auto t2 = std::chrono::high_resolution_clock::now();
+#endif
         for (int i = 0; i < PLAN_HORIZON; i++) {
             // calculate current B_c matrix
             mpc_solver.calculate_B_mat_c(state.robot_mass,
@@ -514,11 +518,15 @@ Eigen::Matrix<double, 3, NUM_LEG> A1RobotControl::compute_grf(A1CtrlStates &stat
         }
 
         // calculate QP matrices
+#ifdef CONVEX_MPC_USE_TIMING
         auto t3 = std::chrono::high_resolution_clock::now();
+#endif
         mpc_solver.calculate_qp_mats(state);
 
         // solve
+#ifdef CONVEX_MPC_USE_TIMING
         auto t4 = std::chrono::high_resolution_clock::now();
+#endif
         if (!solver.isInitialized()) {
             solver.settings()->setVerbosity(false);
             solver.settings()->setWarmStart(true);
@@ -536,10 +544,15 @@ Eigen::Matrix<double, 3, NUM_LEG> A1RobotControl::compute_grf(A1CtrlStates &stat
             solver.updateLowerBound(mpc_solver.lb);
             solver.updateUpperBound(mpc_solver.ub);
         }
+#ifdef CONVEX_MPC_USE_TIMING
         auto t5 = std::chrono::high_resolution_clock::now();
-        solver.solve();
+#endif
+        solver.solveProblem();
+#ifdef CONVEX_MPC_USE_TIMING
         auto t6 = std::chrono::high_resolution_clock::now();
+#endif
 
+#ifdef CONVEX_MPC_USE_TIMING
         std::chrono::duration<double, std::milli> ms_double_1 = t2 - t1;
         std::chrono::duration<double, std::milli> ms_double_2 = t3 - t2;
         std::chrono::duration<double, std::milli> ms_double_3 = t4 - t3;
@@ -551,6 +564,7 @@ Eigen::Matrix<double, 3, NUM_LEG> A1RobotControl::compute_grf(A1CtrlStates &stat
 //        std::cout << "mpc cal qp mats: " << ms_double_3.count() << "ms" << std::endl;
 //        std::cout << "mpc init time: " << ms_double_4.count() << "ms" << std::endl;
 //        std::cout << "mpc solve time: " << ms_double_5.count() << "ms" << std::endl << std::endl;
+#endif
 
         Eigen::VectorXd solution = solver.getSolution();
         // std::cout << solution.transpose() << std::endl;

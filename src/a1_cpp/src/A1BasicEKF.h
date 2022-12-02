@@ -67,7 +67,7 @@ private:
     bool assume_flat_ground = false;
 
     // variables to process foot force
-    double smooth_foot_force[4];
+    // double smooth_foot_force[4];
     double estimated_contacts[4];
 };
 
