@@ -1,6 +1,5 @@
 ## To build Docker run:
 
-### I'm not sure if you have to do this but why not
 ```shell
 xhost +
 ```
