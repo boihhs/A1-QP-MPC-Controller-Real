@@ -34,7 +34,7 @@ sudo docker ps
 
 ### Run the Docker thing in this terminal:
 ```shell
-sudo docker exec -it $CONTAINER_ID bash
+sudo docker exec -it $CONTAINER_ID$ bash
 ```
 
 ```shell
