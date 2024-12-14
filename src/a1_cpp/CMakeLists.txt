@@ -17,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
         unitree_legged_msgs
         )
 
-find_package(Eigen3)
+find_package(Eigen3 REQUIRED)
 include_directories(
         ${EIGEN3_INCLUDE_DIR}
 )
@@ -35,12 +35,14 @@ include_directories(
 
 find_package(OsqpEigen REQUIRED)
 
-# add unitree hardware library, these flags must be correctly set
-include_directories(
-        $ENV{UNITREE_LEGGED_SDK_PATH}/include
-)
 
-link_directories($ENV{UNITREE_LEGGED_SDK_PATH}/lib)
+# --- Unitree SDK Configuration ---
+#   Important: Assumes the Unitree SDK is built in /root/support_files
+set(UNITREE_SDK_INCLUDE_DIR /root/support_files/unitree_legged_sdk/include)
+set(UNITREE_SDK_LIB_DIR /root/support_files/unitree_legged_sdk/lib)
+include_directories(${UNITREE_SDK_INCLUDE_DIR})
+link_directories(${UNITREE_SDK_LIB_DIR})
+
 set(EXTRA_LIBS -pthread libunitree_legged_sdk_amd64.so lcm)
 
 # Declare cpp libraries
