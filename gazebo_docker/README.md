@@ -18,7 +18,7 @@ sudo docker run -it --rm \
     name_of_thing /bin/bash
 ```
 
-### After running this, pause gazebo should pop up:
+### After running this, gazebo should pop up:
 ```shell
 roslaunch unitree_gazebo normal.launch rname:=a1 wname:=stairs_single
 ```
